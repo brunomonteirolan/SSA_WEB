@@ -1,15 +1,13 @@
 import React from "react";
 import { useField } from "formik";
-import { useDropzone } from "react-dropzone";
-// Chakra UI
+import { useDropzone, type Accept } from "react-dropzone";
 import { Box, Flex, Icon, Text } from "@chakra-ui/react";
-// Icons
 import { FiFile } from "react-icons/fi";
 
 interface CustomDragNDropProps {
   name: string;
   label?: string;
-  accept: string;
+  accept?: string | Accept; // ✅ agora aceita string ou Accept (novo tipo)
   isDisabled?: boolean;
 }
 
@@ -19,12 +17,29 @@ const colors = {
   default: "gray.500",
 };
 
-const renderDragMessage = (
-  value: File,
-  isDragActive: boolean,
-  isDragReject: boolean,
-  err?: any
-) => {
+const normalizeAccept = (a?: string | Accept): Accept | undefined => {
+  if (!a) return undefined;
+  if (typeof a !== "string") return a;
+
+  const s = a.trim();
+  if (!s) return undefined;
+
+  // Se for MIME (ex: "image/*", "application/pdf")
+  if (s.includes("/")) {
+    return { [s]: [] };
+  }
+
+  // Se for extensão (ex: ".zip" ou ".zip,.rar")
+  const exts = s
+    .split(",")
+    .map((x) => x.trim())
+    .filter(Boolean)
+    .map((x) => (x.startsWith(".") ? x : `.${x}`));
+
+  return { "application/octet-stream": exts };
+};
+
+const renderDragMessage = (value: File, isDragActive: boolean, isDragReject: boolean, err?: any) => {
   if (isDragActive) return <Text color={colors.success}>Drop your file here to load it</Text>;
 
   if (err) return <Text color={colors.error}>{err}</Text>;
@@ -35,8 +50,7 @@ const renderDragMessage = (
     return (
       <>
         <Icon as={FiFile} />
-
-        <Text ml="2">{value.name} </Text>
+        <Text ml="2">{value.name}</Text>
       </>
     );
 
@@ -48,7 +62,7 @@ const CustomDragNDrop: React.FC<CustomDragNDropProps> = ({ name, label, accept, 
   const [field, meta, helpers] = useField<File>(name);
 
   const { getRootProps, getInputProps, isDragAccept, isDragReject, fileRejections } = useDropzone({
-    accept,
+    accept: normalizeAccept(accept), // ✅ aqui é o fix do erro
     disabled: isDisabled,
     maxFiles: 1,
     onDrop: ([file]) => helpers.setValue(file),
@@ -58,7 +72,7 @@ const CustomDragNDrop: React.FC<CustomDragNDropProps> = ({ name, label, accept, 
 
   return (
     <Box>
-      <Text mb="2">{label}</Text>
+      {label ? <Text mb="2">{label}</Text> : null}
 
       <Flex
         {...getRootProps()}
@@ -68,8 +82,8 @@ const CustomDragNDrop: React.FC<CustomDragNDropProps> = ({ name, label, accept, 
           isDragReject || errorMessage
             ? colors.error
             : meta.value || isDragAccept
-            ? colors.success
-            : colors.default
+              ? colors.success
+              : colors.default
         }
         borderStyle="dashed"
         p="1"

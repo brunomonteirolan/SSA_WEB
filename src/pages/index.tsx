@@ -7,6 +7,7 @@ import UpdateAppInMultipleStores from "../components/modals/UpdateAppInMultipleS
 import { Store } from "../@types/store";
 import { DownloadIcon } from "@chakra-ui/icons";
 import { backend } from "../configs";
+import { EditIcon, SmallAddIcon } from "@chakra-ui/icons";  // ← @chakra-ui/icons
 
 
 export default function Home() {
