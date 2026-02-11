@@ -2,7 +2,7 @@ import React, { useState } from "react";
 // Chakra ui
 import { IconButton, useToast } from "@chakra-ui/react";
 // Icons
-import { DeleteIcon } from "@chakra-ui/react";
+import { DeleteIcon } from "@chakra-ui/icons";
 // Components
 import { ConfirmationModal } from "./modals/ConfirmationModal";
 // Utils
