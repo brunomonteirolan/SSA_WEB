@@ -21,7 +21,7 @@ import {
   Tr,
   useToast,
 } from "@chakra-ui/react";
-import { SmallAddIcon } from "@chakra-ui/react";
+import { SmallAddIcon } from "@chakra-ui/icons";
 
 import UserForm, { FormData } from "../../components/forms/UserForm";
 import { User } from "../../models/user";

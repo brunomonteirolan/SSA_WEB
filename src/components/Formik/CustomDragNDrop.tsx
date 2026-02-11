@@ -2,8 +2,7 @@ import React from "react";
 import { useField } from "formik";
 import { useDropzone } from "react-dropzone";
 // Chakra UI
-import Icon from "@chakra-ui/react";
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Icon, Text } from "@chakra-ui/react";
 // Icons
 import { FiFile } from "react-icons/fi";
 

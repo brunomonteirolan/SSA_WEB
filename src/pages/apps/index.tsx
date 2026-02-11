@@ -16,7 +16,7 @@ import {
   Tr,
   useToast,
 } from "@chakra-ui/react";
-import { EditIcon, SmallAddIcon } from "@chakra-ui/react";
+import { EditIcon, SmallAddIcon } from "@chakra-ui/icons";
 
 // Components
 import Container from "../../components/Container";

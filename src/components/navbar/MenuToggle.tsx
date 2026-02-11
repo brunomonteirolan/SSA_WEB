@@ -1,5 +1,6 @@
 import React from "react";
-import { IconButton, CloseIcon, HamburgerIcon } from "@chakra-ui/react";
+import { IconButton } from "@chakra-ui/react";
+import { CloseIcon, HamburgerIcon } from "@chakra-ui/icons";
 
 
 interface Props {
