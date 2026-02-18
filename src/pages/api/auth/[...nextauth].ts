@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import UserModel from "../../../models/user";
 import connectToMongo from "../../../utils/mongoose";
 
+
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -39,7 +40,7 @@ export const authOptions: NextAuthOptions = {
     return isValid ? { id: user._id.toString(), name: user.name, email: user.email } : null;
   } catch (err) {
     console.error('❌ Error in authorize:', err);
-    return null;
+    throw err;
   }
 }
     }),
