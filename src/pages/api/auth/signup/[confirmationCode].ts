@@ -1,6 +1,6 @@
 import { NextApiHandler } from "next";
 import * as yup from "yup";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 import UserModel from "../../../../models/user";
 import { validate } from "../../../../utils/api/middleware";
