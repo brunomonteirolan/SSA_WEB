@@ -1,25 +1,61 @@
-import mongoose, { Document } from "mongoose";
+import mongoose, { Document, Model, Schema } from "mongoose";
 
-export interface User {
+export interface IUser extends Document {
   name: string;
   email: string;
   password: string;
-  status: "Pending" | "Active";
-  confirmationCode: string;
+  status: string;
+  confirmed: boolean;
+  confirmationCode?: string | null;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-const UserSchema = new mongoose.Schema(
+const UserSchema = new Schema<IUser>(
   {
-    name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, select: false },
-    status: { type: String, enum: ["Pending", "Active"], default: "Pending" },
-    confirmationCode: { type: String },
+    name: {
+      type: String,
+      required: [true, "Name is required"],
+      trim: true,
+    },
+    email: {
+      type: String,
+      required: [true, "Email is required"],
+      unique: true,
+      lowercase: true,
+      trim: true,
+      index: true,
+    },
+    password: {
+      type: String,
+      required: [true, "Password is required"],
+      select: false, // Por padrão não retorna a senha
+    },
+    status: {
+      type: String,
+      enum: ["Active", "Inactive"],
+      default: "Active",
+      index: true,
+    },
+    confirmed: {
+      type: Boolean,
+      default: false,
+    },
+    confirmationCode: {
+      type: String,
+      default: null,
+    },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    collection: "users",
+  }
 );
 
-const UserModel = (mongoose.models.User ||
-  mongoose.model("User", UserSchema, "users")) as mongoose.Model<User & Document>;
+// Índices compostos para melhorar performance
+UserSchema.index({ email: 1, status: 1 });
+
+const UserModel: Model<IUser> =
+  mongoose.models.User || mongoose.model<IUser>("User", UserSchema);
 
 export default UserModel;

@@ -1,10 +1,9 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import bcrypt from "bcryptjs";
+import bcryptjs from "bcryptjs"; // IMPORTANTE: bcryptjs, não bcrypt
 
 import UserModel from "../../../models/user";
 import connectToMongo from "../../../utils/mongoose";
-
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -14,57 +13,96 @@ export const authOptions: NextAuthOptions = {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-async authorize(credentials) {
-  if (!credentials?.email || !credentials?.password) return null;
+      async authorize(credentials) {
+        // Validação básica
+        if (!credentials?.email || !credentials?.password) {
+          console.log("❌ [NextAuth] Missing credentials");
+          return null;
+        }
 
-  try {
-    console.log("🌍 NODE_ENV:", process.env.NODE_ENV);
-    console.log("🗄️  MONGO_URL definida?", !!process.env.MONGO_URL);
-    console.log("🔐 NEXTAUTH_SECRET definida?", !!process.env.NEXTAUTH_SECRET);
-    console.log("📧 Email recebido:", credentials.email);
+        try {
+          // Conectar ao MongoDB
+          await connectToMongo();
+          console.log("✅ [NextAuth] MongoDB connected");
 
-    await connectToMongo();
+          // Buscar usuário - IMPORTANTE: +password para forçar inclusão
+          const user = await UserModel.findOne({
+            email: credentials.email.toLowerCase().trim(),
+            status: "Active",
+          }).select("+password");
 
-    const user = await UserModel.findOne({
-      email: credentials.email,
-      status: "Active", // ver observação abaixo
-    }).select(["name", "email", "password", "status"]);
+          console.log("🔍 [NextAuth] User search:", {
+            email: credentials.email,
+            found: !!user,
+          });
 
-    console.log("🔍 User found:", user ? "YES" : "NO");
-    if (user) console.log("📝 Status no banco:", user.status);
+          if (!user) {
+            console.log("❌ [NextAuth] User not found or inactive");
+            return null;
+          }
 
-    if (!user) return null;
+          // Validar senha - IMPORTANTE: usar compare (async), não compareSync
+          const isValid = await bcryptjs.compare(
+            credentials.password,
+            user.password
+          );
 
-    console.log("🔐 Password from DB:", user.password.substring(0, 20) + "...");
-    console.log("🔑 Password typed:", credentials.password);
+          console.log("🔐 [NextAuth] Password validation:", isValid);
 
-    const isValid = bcrypt.compareSync(credentials.password, user.password);
-    console.log("✅ Password valid:", isValid);
+          if (!isValid) {
+            console.log("❌ [NextAuth] Invalid password");
+            return null;
+          }
 
-    return isValid
-      ? { id: user._id.toString(), name: user.name, email: user.email }
-      : null;
-  } catch (err: any) {
-    console.error("❌ Error in authorize:", err.message);
-    console.error(err.stack);
-    throw err; // deixa estourar pra aparecer na Vercel
-  }
-}
+          console.log("✅ [NextAuth] Login successful for:", user.email);
+
+          // Retornar usuário autenticado
+          return {
+            id: user._id.toString(),
+            name: user.name,
+            email: user.email,
+          };
+        } catch (error) {
+          console.error("❌ [NextAuth] Authorization error:", error);
+          return null;
+        }
+      },
     }),
   ],
   session: {
     strategy: "jwt",
-    maxAge: 24 * 60 * 60,
-  },
-  jwt: {
-    secret: process.env.NEXTAUTH_SECRET,
+    maxAge: 24 * 60 * 60, // 24 hours
   },
   secret: process.env.NEXTAUTH_SECRET,
+  pages: {
+    signIn: "/",
+    error: "/",
+  },
   callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token && session.user) {
+        session.user.id = token.id as string;
+        session.user.email = token.email as string;
+        session.user.name = token.name as string;
+      }
+      return session;
+    },
     async redirect({ url, baseUrl }) {
-      return `${baseUrl}/`;
+      // Após login, redirecionar para home
+      if (url.startsWith(baseUrl)) return url;
+      return baseUrl + "/";
     },
   },
+  // Ativar debug em desenvolvimento
+  debug: process.env.NODE_ENV === "development",
 };
 
 export default NextAuth(authOptions);
