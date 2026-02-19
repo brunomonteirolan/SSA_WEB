@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
@@ -21,15 +21,18 @@ const Container: React.FC<Props> = ({
   children,
   ...props
 }) => {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
 
-  if (status === "unauthenticated") {
-    router.push("/api/auth/signin");
-    return null;
-  }
+  // Redirecionar para a página de login quando não autenticado
+  // (via useEffect para evitar side-effects durante o render)
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/auth/signin");
+    }
+  }, [status, router]);
 
-  if (status === "loading")
+  if (status === "loading" || status === "unauthenticated")
     return (
       <Center h="100vh">
         <CircularProgress isIndeterminate />

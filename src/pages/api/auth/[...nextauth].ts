@@ -1,11 +1,11 @@
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcryptjs from "bcryptjs";
 
 import UserModel from "../../../models/user";
 import connectToMongo from "../../../utils/mongoose";
 
-export default NextAuth({
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -57,7 +57,7 @@ export default NextAuth({
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: "/",
+    signIn: "/auth/signin",
   },
   callbacks: {
     async jwt({ token, user }) {
@@ -73,4 +73,6 @@ export default NextAuth({
       return session;
     },
   },
-});
+};
+
+export default NextAuth(authOptions);

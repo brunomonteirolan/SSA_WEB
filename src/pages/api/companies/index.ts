@@ -4,6 +4,7 @@ import { authOptions } from "../auth/[...nextauth]";
 import * as yup from "yup";
 import ClientModel from "../../../models/clientModel";
 import CompanyModel from "../../../models/companyModel";
+import connectToMongo from "../../../utils/mongoose";
 
 interface CompanySchema {
   name: string;
@@ -22,6 +23,8 @@ const handler: NextApiHandler = async (req, res) => {
 
   if (!session)
     return res.status(403).json({ message: "You must be authenticated to view this content" });
+
+  await connectToMongo();
 
   if (req.method === "POST") {
     try {

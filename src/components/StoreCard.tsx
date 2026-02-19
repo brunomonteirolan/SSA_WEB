@@ -41,7 +41,7 @@ const StoreCard: React.FC<Props> = ({ store, socket }) => {
       );
 
       showSuccessMessage(data.message);
-    } catch (err) {
+    } catch (err: any) {
       toast({
         status: "error",
         description: err.response?.data?.message || err.message || "Sorry, an error happened",

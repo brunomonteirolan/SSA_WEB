@@ -1,14 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { Button, Flex, Text, Wrap, WrapItem } from "@chakra-ui/react";
+import { DownloadIcon } from "@chakra-ui/icons";
 import Container from "../components/Container";
 import StoreCard from "../components/StoreCard";
 import UpdateAppInMultipleStores from "../components/modals/UpdateAppInMultipleStores";
 import { Store } from "../@types/store";
-import { DownloadIcon } from "@chakra-ui/icons";
 import { backend } from "../configs";
-import { EditIcon, SmallAddIcon } from "@chakra-ui/icons";  // ← @chakra-ui/icons
-
 
 export default function Home() {
   const socket = useRef<Socket | null>(null);

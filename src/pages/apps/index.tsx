@@ -85,7 +85,7 @@ const Apps: React.FC = () => {
       mutate(data.versions);
       versionFormControl.close();
       toast({ status: "success", description: data.message ?? "Version successfully updated" });
-    } catch (err) {
+    } catch (err: any) {
       setSubmitting(false);
       toast({
         status: "error",

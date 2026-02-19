@@ -3,13 +3,16 @@ import mongoose, { Document, Model, Schema } from "mongoose";
 export interface IUser extends Document {
   name: string;
   email: string;
-  password: string;
-  status: string;
+  password?: string;
+  status: "Active" | "Inactive" | "Pending";
   confirmed: boolean;
   confirmationCode?: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
+
+// Alias para uso nos componentes de página
+export type User = IUser;
 
 const UserSchema = new Schema<IUser>(
   {
@@ -28,13 +31,13 @@ const UserSchema = new Schema<IUser>(
     },
     password: {
       type: String,
-      required: [true, "Password is required"],
-      select: false, // Por padrão não retorna a senha
+      required: false, // Não obrigatório na criação: usuário define senha no primeiro acesso
+      select: false,   // Por padrão não retorna a senha
     },
     status: {
       type: String,
-      enum: ["Active", "Inactive"],
-      default: "Active",
+      enum: ["Active", "Inactive", "Pending"],
+      default: "Pending", // Novo usuário começa como Pending até definir a senha
       index: true,
     },
     confirmed: {

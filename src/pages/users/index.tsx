@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FormikHelpers } from "formik";
 import axios from "axios";
-import copy from "copy-to-clipboard";
 import {
   Button,
   Center,
@@ -24,26 +23,32 @@ import {
 import { SmallAddIcon } from "@chakra-ui/icons";
 
 import UserForm, { FormData } from "../../components/forms/UserForm";
-import { User } from "../../models/user";
 import Container from "../../components/Container";
+
+// Tipo simplificado para exibição na tabela (vem da API, sem os campos do Document)
+interface UserRow {
+  name: string;
+  email: string;
+  status: string;
+  confirmationCode?: string | null;
+}
 
 const Users: React.FC = () => {
   // Hooks
   const toast = useToast();
 
   // States
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<UserRow[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // TODO: useSwr
     const fetchUsers = async () => {
       setLoading(true);
 
       try {
         const { data } = await axios.get("/api/users");
         setUsers(data.users);
-      } catch (err) {
+      } catch (err: any) {
         toast({
           status: "error",
           description: err.response?.data?.message || err.message || "Sorry, an error happened",
@@ -77,7 +82,7 @@ const Users: React.FC = () => {
       toast({ status: "success", description: "User created successfully" });
       setUsers((prev) => [...prev, data.user]);
       resetForm();
-    } catch (err) {
+    } catch (err: any) {
       toast({
         status: "error",
         description: err.response?.data?.message || err.message || "Sorry, an error happened",
@@ -88,7 +93,18 @@ const Users: React.FC = () => {
   };
 
   const handleCopy = (index: number) => {
-    copy(`${window.location.origin}/first-access/${users[index].confirmationCode}`);
+    const confirmationCode = users[index].confirmationCode;
+    if (!confirmationCode) return;
+    const url = `${window.location.origin}/first-access/${confirmationCode}`;
+    navigator.clipboard.writeText(url).catch(() => {
+      // Fallback para browsers sem suporte à Clipboard API
+      const el = document.createElement("textarea");
+      el.value = url;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand("copy");
+      document.body.removeChild(el);
+    });
     toast({ status: "success", description: "First access URL copied successfully" });
   };
 
