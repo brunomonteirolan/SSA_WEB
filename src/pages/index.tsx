@@ -31,6 +31,7 @@ export default function Home() {
     <Container>
       <Flex justify="flex-end" mb="4">
         <Button
+          colorScheme="brand"
           variant="outline"
           leftIcon={<DownloadIcon />}
           size="md"
@@ -38,17 +39,18 @@ export default function Home() {
           isDisabled={!stores.length}
           onClick={() => setUpdateStoresModal(true)}
         >
-          Update multiple stores
+          Atualizar múltiplas lojas
         </Button>
 
         <Button
+          colorScheme="brand"
           variant="outline"
           as="a"
           href={`${backend.api}/client/latest`}
           leftIcon={<DownloadIcon />}
           size="md"
         >
-          Download client
+          Baixar cliente
         </Button>
       </Flex>
 
@@ -63,8 +65,8 @@ export default function Home() {
             ))}
         </Wrap>
       ) : (
-        <Text fontSize="xl" textAlign="center">
-          No stores connected
+        <Text fontSize="xl" textAlign="center" color="#555">
+          Nenhuma loja conectada
         </Text>
       )}
 
