@@ -132,7 +132,7 @@ const FirstAccess: React.FC<Props> = ({ user, confirmationCode }) => {
                       color: "white", fontSize: "14px", outline: "none",
                     }}
                     onFocus={(e) => { e.currentTarget.style.borderColor = "#E3001B"; }}
-                    onBlur_={(e) => { if (!errors.password) e.currentTarget.style.borderColor = "#2D2D2D"; }}
+                    onBlur={(e) => { if (!errors.password) e.currentTarget.style.borderColor = "#2D2D2D"; handleBlur(e); }}
                   />
                 </div>
                 {touched.password && errors.password && (
