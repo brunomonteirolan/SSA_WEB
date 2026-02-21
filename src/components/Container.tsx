@@ -2,10 +2,7 @@ import React, { useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-// Chakra ui
-import { Box, BoxProps } from "@chakra-ui/react";
-import { Center, CircularProgress, Text } from "@chakra-ui/react";
-// Components
+import { Box, BoxProps, Center, CircularProgress } from "@chakra-ui/react";
 import Navbar from "./navbar";
 
 interface Props extends BoxProps {
@@ -24,8 +21,6 @@ const Container: React.FC<Props> = ({
   const { status } = useSession();
   const router = useRouter();
 
-  // Redirecionar para a página de login quando não autenticado
-  // (via useEffect para evitar side-effects durante o render)
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/auth/signin");
@@ -34,31 +29,26 @@ const Container: React.FC<Props> = ({
 
   if (status === "loading" || status === "unauthenticated")
     return (
-      <Center h="100vh">
-        <CircularProgress isIndeterminate />
+      <Center h="100vh" bg="#0A0A0A">
+        <CircularProgress isIndeterminate color="#E3001B" />
       </Center>
     );
 
   return (
-    <Box h="100vh">
+    <Box minH="100vh" bg="#0A0A0A">
       <Head>
-        <title>{pageTitle.length ? `${pageTitle} - ` : ""}Super Sacoa app</title>
+        <title>{pageTitle.length ? `${pageTitle} — ` : ""}Sacoa Super App</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       {!skipNavbar && <Navbar />}
 
       {isPageLoading ? (
-        <Center h="full">
-          <CircularProgress isIndeterminate />
-          {typeof isPageLoading === "string" && (
-            <Text ml="4" fontSize="2xl">
-              {isPageLoading}
-            </Text>
-          )}
+        <Center h="calc(100vh - 64px)">
+          <CircularProgress isIndeterminate color="#E3001B" />
         </Center>
       ) : (
-        <Box px={6} py={4} {...props}>
+        <Box px={6} py={5} {...props}>
           {children}
         </Box>
       )}

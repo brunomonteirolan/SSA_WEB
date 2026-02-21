@@ -9,6 +9,8 @@ import connectToMongo from "../../../../utils/mongoose";
 const userSchema = yup.object({
   name: yup.string().trim().required(),
   email: yup.string().email().trim().required(),
+  role: yup.string().oneOf(["admin", "manager", "viewer"]).optional(),
+  permissions: yup.array().of(yup.string()).optional(),
 });
 
 const handler: NextApiHandler = async (req, res) => {

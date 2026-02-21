@@ -14,198 +14,105 @@ export default function SignInPage() {
     e.preventDefault();
     setIsLoading(true);
     setError("");
-
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
-
+    const result = await signIn("credentials", { email, password, redirect: false });
     if (result?.error) {
       setError("E-mail ou senha inválidos. Tente novamente.");
+      setIsLoading(false);
     } else {
       router.push("/");
     }
-
-    setIsLoading(false);
   };
 
   return (
     <>
       <Head>
         <title>Sacoa Cashless System — Login</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-
       <div style={styles.root}>
-        {/* Background grid pattern overlay */}
         <div style={styles.gridOverlay} />
-
-        {/* Glow blobs */}
-        <div style={{ ...styles.blob, top: "-80px", left: "-80px", background: "radial-gradient(circle, rgba(0,180,100,0.18) 0%, transparent 70%)" }} />
-        <div style={{ ...styles.blob, bottom: "-60px", right: "-60px", background: "radial-gradient(circle, rgba(0,130,255,0.12) 0%, transparent 70%)" }} />
+        <div style={styles.glowLeft} />
+        <div style={styles.glowRight} />
 
         <div style={styles.card}>
-          {/* Logo / Brand */}
           <div style={styles.brandArea}>
             <div style={styles.logoBox}>
               <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-                <rect width="36" height="36" rx="10" fill="#00C97C" />
-                <path d="M9 18C9 13.03 13.03 9 18 9C20.48 9 22.72 10 24.36 11.64L21.54 14.46C20.64 13.56 19.38 13 18 13C15.24 13 13 15.24 13 18C13 20.76 15.24 23 18 23C19.96 23 21.66 21.92 22.56 20.32L26.16 22.36C24.62 25.14 21.52 27 18 27C13.03 27 9 22.97 9 18Z" fill="white"/>
-                <circle cx="25" cy="13" r="3" fill="white" />
+                <rect width="36" height="36" rx="8" fill="#E3001B" />
+                <text x="18" y="26" textAnchor="middle" fontFamily="Arial" fontWeight="900" fontSize="22" fill="white">S</text>
               </svg>
             </div>
             <div>
-              <h1 style={styles.brandName}>SACOA</h1>
-              <p style={styles.brandTagline}>Cashless System</p>
+              <div style={styles.brandName}>SACOA</div>
+              <div style={styles.brandTagline}>CASHLESS SYSTEM</div>
             </div>
           </div>
 
-          {/* Divider */}
-          <div style={styles.divider} />
-
-          <h2 style={styles.title}>Bem-vindo de volta</h2>
+          <h1 style={styles.title}>Bem-vindo de volta</h1>
           <p style={styles.subtitle}>Faça login para acessar o painel</p>
 
           <form onSubmit={handleSubmit} style={styles.form}>
-            {/* Email */}
             <div style={styles.fieldGroup}>
-              <label htmlFor="email" style={styles.label}>
-                E-mail
-              </label>
+              <label style={styles.label}>E-mail</label>
               <div style={styles.inputWrapper}>
-                <span style={styles.inputIcon}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                    <polyline points="22,6 12,13 2,6" />
-                  </svg>
-                </span>
+                <svg style={styles.inputIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                </svg>
                 <input
-                  id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="seu@email.com"
                   required
-                  autoComplete="email"
                   style={styles.input}
-                  onFocus={(e) => {
-                    e.currentTarget.style.borderColor = "#00C97C";
-                    e.currentTarget.style.boxShadow = "0 0 0 3px rgba(0,201,124,0.15)";
-                  }}
-                  onBlur={(e) => {
-                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
-                    e.currentTarget.style.boxShadow = "none";
-                  }}
+                  autoComplete="email"
                 />
               </div>
             </div>
 
-            {/* Password */}
             <div style={styles.fieldGroup}>
-              <label htmlFor="password" style={styles.label}>
-                Senha
-              </label>
+              <label style={styles.label}>Senha</label>
               <div style={styles.inputWrapper}>
-                <span style={styles.inputIcon}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                  </svg>
-                </span>
+                <svg style={styles.inputIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                </svg>
                 <input
-                  id="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  autoComplete="current-password"
                   style={styles.input}
-                  onFocus={(e) => {
-                    e.currentTarget.style.borderColor = "#00C97C";
-                    e.currentTarget.style.boxShadow = "0 0 0 3px rgba(0,201,124,0.15)";
-                  }}
-                  onBlur={(e) => {
-                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
-                    e.currentTarget.style.boxShadow = "none";
-                  }}
+                  autoComplete="current-password"
                 />
               </div>
             </div>
 
-            {/* Error message */}
             {error && (
               <div style={styles.errorBox}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0 }}>
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="8" x2="12" y2="12" />
-                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E3001B" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
                 </svg>
-                <span>{error}</span>
+                <span style={{ marginLeft: 8 }}>{error}</span>
               </div>
             )}
 
-            {/* Submit button */}
             <button
               type="submit"
               disabled={isLoading}
-              style={{
-                ...styles.button,
-                opacity: isLoading ? 0.75 : 1,
-                cursor: isLoading ? "not-allowed" : "pointer",
-              }}
-              onMouseEnter={(e) => {
-                if (!isLoading) {
-                  e.currentTarget.style.background = "linear-gradient(135deg, #00e88a 0%, #00b36b 100%)";
-                  e.currentTarget.style.transform = "translateY(-1px)";
-                  e.currentTarget.style.boxShadow = "0 8px 25px rgba(0,201,124,0.4)";
-                }
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "linear-gradient(135deg, #00C97C 0%, #009a5e 100%)";
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow = "0 4px 15px rgba(0,201,124,0.3)";
-              }}
+              style={{ ...styles.button, opacity: isLoading ? 0.7 : 1, cursor: isLoading ? "not-allowed" : "pointer" }}
             >
-              {isLoading ? (
-                <span style={styles.spinner}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ animation: "spin 0.8s linear infinite" }}>
-                    <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-                  </svg>
-                  Entrando...
-                </span>
-              ) : (
-                "Entrar"
-              )}
+              {isLoading ? "Entrando..." : "Entrar"}
             </button>
           </form>
 
-          {/* Footer */}
-          <p style={styles.footer}>
+          <div style={styles.footer}>
             © {new Date().getFullYear()} Sacoa Cashless System. Todos os direitos reservados.
-          </p>
+          </div>
         </div>
 
         <style>{`
-          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-          * { box-sizing: border-box; margin: 0; padding: 0; }
-          @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-          }
-          @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(24px); }
-            to { opacity: 1; transform: translateY(0); }
-          }
-          input:-webkit-autofill,
-          input:-webkit-autofill:hover,
-          input:-webkit-autofill:focus {
-            -webkit-box-shadow: 0 0 0px 1000px #1e2538 inset !important;
-            -webkit-text-fill-color: #ffffff !important;
-            border-color: rgba(255,255,255,0.1) !important;
-            transition: background-color 5000s ease-in-out 0s;
-          }
+          input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus{-webkit-text-fill-color:white!important;-webkit-box-shadow:0 0 0px 1000px #1A1A1A inset!important;}
+          input:focus{outline:none;border-color:#E3001B!important;box-shadow:0 0 0 1px #E3001B!important;}
         `}</style>
       </div>
     </>
@@ -213,171 +120,24 @@ export default function SignInPage() {
 }
 
 const styles: Record<string, React.CSSProperties> = {
-  root: {
-    minHeight: "100vh",
-    background: "linear-gradient(135deg, #0d1117 0%, #161b27 50%, #0d1117 100%)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
-    position: "relative",
-    overflow: "hidden",
-    padding: "24px",
-  },
-  gridOverlay: {
-    position: "absolute",
-    inset: 0,
-    backgroundImage: `
-      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)
-    `,
-    backgroundSize: "40px 40px",
-    pointerEvents: "none",
-  },
-  blob: {
-    position: "absolute",
-    width: "500px",
-    height: "500px",
-    borderRadius: "50%",
-    pointerEvents: "none",
-  },
-  card: {
-    background: "rgba(22, 27, 39, 0.85)",
-    backdropFilter: "blur(20px)",
-    WebkitBackdropFilter: "blur(20px)",
-    border: "1px solid rgba(255,255,255,0.08)",
-    borderRadius: "20px",
-    padding: "40px",
-    width: "100%",
-    maxWidth: "420px",
-    boxShadow: "0 25px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05)",
-    animation: "fadeInUp 0.5s ease forwards",
-    position: "relative",
-    zIndex: 1,
-  },
-  brandArea: {
-    display: "flex",
-    alignItems: "center",
-    gap: "12px",
-    marginBottom: "24px",
-  },
-  logoBox: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  brandName: {
-    fontSize: "22px",
-    fontWeight: "700",
-    color: "#ffffff",
-    letterSpacing: "4px",
-    lineHeight: 1.1,
-  },
-  brandTagline: {
-    fontSize: "11px",
-    color: "#00C97C",
-    fontWeight: "500",
-    letterSpacing: "2px",
-    textTransform: "uppercase",
-    marginTop: "2px",
-  },
-  divider: {
-    height: "1px",
-    background: "linear-gradient(90deg, rgba(0,201,124,0.3), rgba(255,255,255,0.06), transparent)",
-    marginBottom: "28px",
-  },
-  title: {
-    fontSize: "20px",
-    fontWeight: "600",
-    color: "#ffffff",
-    marginBottom: "6px",
-  },
-  subtitle: {
-    fontSize: "13px",
-    color: "rgba(255,255,255,0.45)",
-    marginBottom: "28px",
-    fontWeight: "400",
-  },
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "18px",
-  },
-  fieldGroup: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "7px",
-  },
-  label: {
-    fontSize: "13px",
-    fontWeight: "500",
-    color: "rgba(255,255,255,0.7)",
-    letterSpacing: "0.3px",
-  },
-  inputWrapper: {
-    position: "relative",
-    display: "flex",
-    alignItems: "center",
-  },
-  inputIcon: {
-    position: "absolute",
-    left: "14px",
-    color: "rgba(255,255,255,0.35)",
-    display: "flex",
-    alignItems: "center",
-    pointerEvents: "none",
-    zIndex: 1,
-  },
-  input: {
-    width: "100%",
-    padding: "12px 14px 12px 42px",
-    background: "rgba(255,255,255,0.04)",
-    border: "1px solid rgba(255,255,255,0.1)",
-    borderRadius: "10px",
-    color: "#ffffff",
-    fontSize: "14px",
-    outline: "none",
-    transition: "border-color 0.2s, box-shadow 0.2s",
-    fontFamily: "inherit",
-  },
-  errorBox: {
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-    background: "rgba(255,60,60,0.1)",
-    border: "1px solid rgba(255,60,60,0.2)",
-    borderRadius: "8px",
-    padding: "10px 14px",
-    color: "#ff7070",
-    fontSize: "13px",
-    fontWeight: "500",
-  },
-  button: {
-    width: "100%",
-    padding: "13px",
-    background: "linear-gradient(135deg, #00C97C 0%, #009a5e 100%)",
-    color: "#ffffff",
-    border: "none",
-    borderRadius: "10px",
-    fontSize: "15px",
-    fontWeight: "600",
-    letterSpacing: "0.3px",
-    transition: "all 0.2s ease",
-    boxShadow: "0 4px 15px rgba(0,201,124,0.3)",
-    marginTop: "4px",
-    fontFamily: "inherit",
-  },
-  spinner: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "8px",
-  },
-  footer: {
-    marginTop: "28px",
-    textAlign: "center" as const,
-    fontSize: "11px",
-    color: "rgba(255,255,255,0.2)",
-    fontWeight: "400",
-  },
+  root: { minHeight: "100vh", background: "linear-gradient(135deg, #0A0A0A 0%, #141414 50%, #0A0A0A 100%)", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" },
+  gridOverlay: { position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(227,0,27,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(227,0,27,0.04) 1px, transparent 1px)", backgroundSize: "40px 40px", pointerEvents: "none" },
+  glowLeft: { position: "absolute", top: "-200px", left: "-200px", width: "500px", height: "500px", borderRadius: "50%", background: "radial-gradient(circle, rgba(227,0,27,0.15) 0%, transparent 70%)", pointerEvents: "none" },
+  glowRight: { position: "absolute", bottom: "-200px", right: "-200px", width: "500px", height: "500px", borderRadius: "50%", background: "radial-gradient(circle, rgba(227,0,27,0.08) 0%, transparent 70%)", pointerEvents: "none" },
+  card: { position: "relative", zIndex: 1, background: "rgba(20,20,20,0.92)", backdropFilter: "blur(20px)", border: "1px solid rgba(227,0,27,0.2)", borderRadius: "16px", padding: "40px", width: "100%", maxWidth: "420px", boxShadow: "0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(227,0,27,0.1)", margin: "16px" },
+  brandArea: { display: "flex", alignItems: "center", gap: "12px", marginBottom: "28px" },
+  logoBox: { display: "flex", alignItems: "center", justifyContent: "center" },
+  brandName: { fontSize: "20px", fontWeight: 900, letterSpacing: "4px", color: "white", lineHeight: "1" },
+  brandTagline: { fontSize: "10px", fontWeight: 600, letterSpacing: "3px", color: "#E3001B", marginTop: "2px" },
+  title: { fontSize: "24px", fontWeight: 700, color: "white", margin: "0 0 6px 0" },
+  subtitle: { fontSize: "14px", color: "#888", margin: "0 0 28px 0" },
+  form: { display: "flex", flexDirection: "column", gap: "18px" },
+  fieldGroup: { display: "flex", flexDirection: "column", gap: "6px" },
+  label: { fontSize: "13px", fontWeight: 500, color: "#AAAAAA", letterSpacing: "0.5px" },
+  inputWrapper: { position: "relative", display: "flex", alignItems: "center" },
+  inputIcon: { position: "absolute", left: "12px", width: "18px", height: "18px", color: "#555", pointerEvents: "none" } as React.CSSProperties,
+  input: { width: "100%", padding: "11px 12px 11px 40px", background: "#1A1A1A", border: "1px solid #2D2D2D", borderRadius: "8px", color: "white", fontSize: "14px", transition: "border-color 0.2s", boxSizing: "border-box" },
+  errorBox: { display: "flex", alignItems: "center", padding: "10px 14px", background: "rgba(227,0,27,0.1)", border: "1px solid rgba(227,0,27,0.3)", borderRadius: "8px", color: "#ff6b6b", fontSize: "13px" },
+  button: { width: "100%", padding: "13px", background: "#E3001B", color: "white", border: "none", borderRadius: "8px", fontSize: "15px", fontWeight: 700, letterSpacing: "0.5px", transition: "background 0.2s", marginTop: "4px" },
+  footer: { textAlign: "center", marginTop: "28px", fontSize: "11px", color: "#444" },
 };
