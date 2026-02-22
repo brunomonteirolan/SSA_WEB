@@ -122,7 +122,6 @@ const FirstAccess: React.FC<Props> = ({ user, confirmationCode }) => {
                     placeholder="Mínimo 8 caracteres"
                     value={values.password}
                     onChange={handleChange}
-                    onBlur={handleBlur}
                     disabled={isSubmitting}
                     style={{
                       width: "100%", boxSizing: "border-box",
