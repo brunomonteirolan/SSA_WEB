@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import {
   Box, Button, Flex, Text, Badge, IconButton, useToast,
   Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, ModalCloseButton,
@@ -43,6 +45,15 @@ const STATUS_COLOR: Record<string, string> = {
 export default function UsersPage() {
   const toast = useToast();
   const cancelRef = React.useRef<HTMLButtonElement>(null);
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  // Admin-only guard
+  useEffect(() => {
+    if (status === "authenticated" && (session?.user as any)?.role !== "admin") {
+      router.replace("/");
+    }
+  }, [status, session, router]);
 
   const [users, setUsers] = useState<UserRow[]>([]);
   const [loading, setLoading] = useState(true);

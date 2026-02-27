@@ -47,6 +47,8 @@ const Navbar: React.FC = () => {
   const { data: session } = useSession();
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const isAdmin = (session?.user as any)?.role === "admin";
+
   return (
     <Box
       as="nav"
@@ -90,7 +92,12 @@ const Navbar: React.FC = () => {
         <Flex display={{ base: "none", md: "flex" }} align="center" gap={1}>
           <NavLink href="/" label="Stores" isActive={router.pathname === "/"} />
           <NavLink href="/apps" label="Apps" isActive={router.pathname.startsWith("/apps")} />
-          <NavLink href="/users" label="Usuários" isActive={router.pathname.startsWith("/users")} />
+          {isAdmin && (
+            <>
+              <NavLink href="/users" label="Usuários" isActive={router.pathname.startsWith("/users")} />
+              <NavLink href="/settings" label="Configurações" isActive={router.pathname.startsWith("/settings")} />
+            </>
+          )}
         </Flex>
 
         {/* User menu */}
@@ -122,8 +129,19 @@ const Navbar: React.FC = () => {
                 <Text fontSize="sm" color="white" fontWeight={600} noOfLines={1}>
                   {session?.user?.email}
                 </Text>
+                {isAdmin && (
+                  <Text fontSize="xs" color="#E3001B" fontWeight={600} mt="2px">Administrador</Text>
+                )}
               </Box>
               <MenuDivider borderColor="#2D2D2D" />
+              {isAdmin && (
+                <MenuItem
+                  fontWeight={500}
+                  onClick={() => router.push("/settings")}
+                >
+                  Configuracoes
+                </MenuItem>
+              )}
               <MenuItem
                 color="#ff6b6b"
                 fontWeight={500}
@@ -151,7 +169,12 @@ const Navbar: React.FC = () => {
         <Box display={{ base: "flex", md: "none" }} flexDir="column" pb={4} gap={1} borderTop="1px solid #1F1F1F" pt={3}>
           <NavLink href="/" label="Stores" isActive={router.pathname === "/"} />
           <NavLink href="/apps" label="Apps" isActive={router.pathname.startsWith("/apps")} />
-          <NavLink href="/users" label="Usuários" isActive={router.pathname.startsWith("/users")} />
+          {isAdmin && (
+            <>
+              <NavLink href="/users" label="Usuarios" isActive={router.pathname.startsWith("/users")} />
+              <NavLink href="/settings" label="Configuracoes" isActive={router.pathname.startsWith("/settings")} />
+            </>
+          )}
         </Box>
       )}
     </Box>

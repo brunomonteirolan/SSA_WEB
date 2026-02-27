@@ -5,6 +5,7 @@ import crypto from "crypto";
 import UserModel from "../../../../models/user";
 import { validate } from "../../../../utils/api/middleware";
 import connectToMongo from "../../../../utils/mongoose";
+import { sendActivationEmail } from "../../../../utils/mailer";
 
 const userSchema = yup.object({
   name: yup.string().trim().required(),
@@ -23,6 +24,15 @@ const handler: NextApiHandler = async (req, res) => {
     const confirmationCode = crypto.randomBytes(12).toString("hex");
 
     const user = await UserModel.create({ ...value, confirmationCode });
+
+    // Try to send activation email (non-blocking — if SMTP not configured, just skip)
+    try {
+      const baseUrl = process.env.NEXTAUTH_URL || `https://${req.headers.host}`;
+      await sendActivationEmail(user.email, user.name, confirmationCode, baseUrl);
+    } catch (emailErr: any) {
+      // Email failed but user was created — log and continue
+      console.warn("Activation email not sent:", emailErr.message);
+    }
 
     res.json({ user });
   } catch (err: any) {
